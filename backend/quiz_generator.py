@@ -11,7 +11,7 @@ load_dotenv()
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 # Use gemini-2.0-flash — free and fast
-MODEL = "gemini-2.0-flash"
+MODEL = "gemini-2.5-flash"
 
 
 def generate_quiz(text: str, difficulty: str, num_mcq: int, num_short: int) -> dict:
