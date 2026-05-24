@@ -47,7 +47,7 @@ function App() {
 
     try {
       const response = await axios.post(
-        "https://quizerator-production.up.railway.app/api/generate-quiz",
+        "https://emmxd-x-quizerator-api.hf.space/api/generate-quiz",
         formData
       );
       setQuiz(response.data.quiz);
