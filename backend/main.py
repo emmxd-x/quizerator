@@ -20,6 +20,7 @@ app.add_middleware(
 
 # Folder where uploaded files are temporarily saved
 UPLOAD_DIR = "uploads"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
 @app.get("/")
