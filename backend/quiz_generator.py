@@ -22,7 +22,7 @@ STRICT RULES:
 2. Every MCQ must have exactly 4 options labeled A, B, C, D.
 3. The correct_answer for MCQ must be one of: "A", "B", "C", or "D".
 4. Every MCQ must have an "explanation" field — 1-2 sentences explaining why the answer is correct, sourced from the text.
-5. Short answer correct_answer must be a detailed response in either a paragraph or 3-5 bullet points starting with "•".
+5. Short answer correct_answer must be a concise response. Use a short paragraph for simple answers. Use 2-4 short bullet points starting with "•" ONLY when listing multiple distinct items. Each bullet must be one short sentence maximum. Never use bullets for a single continuous explanation.
 6. Difficulty affects question depth:
    - easy: basic recall and definitions
    - medium: understanding and application

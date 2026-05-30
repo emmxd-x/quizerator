@@ -1,3 +1,21 @@
+function formatAnswer(text) {
+  if (!text) return null;
+  
+  // Check if answer contains bullet points
+  if (text.includes("•")) {
+    const parts = text.split("•").filter(p => p.trim());
+    return (
+      <ul className="answer-bullets">
+        {parts.map((part, i) => (
+          <li key={i}>{part.trim()}</li>
+        ))}
+      </ul>
+    );
+  }
+  
+  return <p>{text}</p>;
+}
+
 function QuestionCard({ question, index, revealed, selectedAnswer, onAnswer, onReveal }) {
   return (
     <div className="question-card-new">
@@ -40,20 +58,29 @@ function QuestionCard({ question, index, revealed, selectedAnswer, onAnswer, onR
       {/* Answer Revealed */}
       {revealed && (
         <div className="answer-revealed">
-          <div className="correct-answer">
-            ✅ Correct Answer: <strong>{question.correct_answer}</strong>
-          </div>
-          {question.explanation && (
-            <div className="explanation">
-              💡 <strong>Explanation:</strong> {question.explanation}
-            </div>
+
+          {/* MCQ: show correct option + explanation */}
+          {question.type === "mcq" && (
+            <>
+              <div className="correct-answer">
+                ✅ Correct Answer: <strong>{question.correct_answer} — {question.options[question.correct_answer]}</strong>
+              </div>
+              {question.explanation && (
+                <div className="explanation">
+                  💡 <strong>Explanation:</strong> {question.explanation}
+                </div>
+              )}
+            </>
           )}
+
+          {/* Short Answer: show formatted answer only once */}
           {question.type === "short" && (
             <div className="short-answer">
-              <strong>Answer:</strong>
-              <p>{question.correct_answer}</p>
+              <p className="short-answer-label">📝 Answer:</p>
+              {formatAnswer(question.correct_answer)}
             </div>
           )}
+
         </div>
       )}
     </div>
