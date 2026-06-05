@@ -106,8 +106,16 @@ function Quiz() {
     } else {
       // Go to results
       navigate("/results", {
-        state: { quiz, answers },
-      });
+  state: {
+    quiz,
+    answers,
+    settings: {
+      difficulty,
+      num_mcq: numMcq,
+      num_short: numShort,
+    }
+  },
+});
     }
   };
 

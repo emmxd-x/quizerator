@@ -1,26 +1,42 @@
 import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState, useRef } from "react";
+import { useAuth } from "../AuthContext";
+import { saveQuiz } from "../quizService";
 import "./Results.css";
 
 function Results() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const hasSaved = useRef(false);
 
-  const { quiz, answers } = location.state || {};
+  const { quiz, answers, settings } = location.state || {};
+  const [saved, setSaved] = useState(false);
 
-  // If no quiz data redirect to quiz page
-  if (!quiz) {
-    navigate("/quiz");
-    return null;
-  }
-
-  // Calculate score
-  const mcqQuestions = quiz.questions.filter((q) => q.type === "mcq");
-  const correctAnswers = mcqQuestions.filter(
-    (q, i) => {
-      const globalIndex = quiz.questions.indexOf(q);
-      return answers[globalIndex] === q.correct_answer;
+  useEffect(() => {
+    if (!quiz) {
+      navigate("/quiz");
+      return;
     }
-  ).length;
+    if (user && !hasSaved.current) {
+      hasSaved.current = true;
+      saveQuiz(user.id, quiz, settings || {
+        difficulty: "medium",
+        num_mcq: quiz.questions.filter(q => q.type === "mcq").length,
+        num_short: quiz.questions.filter(q => q.type === "short").length,
+      }, answers).then((result) => {
+        if (result) setSaved(true);
+      });
+    }
+  }, []);
+
+  if (!quiz) return null;
+
+  const mcqQuestions = quiz.questions.filter((q) => q.type === "mcq");
+  const correctAnswers = mcqQuestions.filter((q) => {
+    const globalIndex = quiz.questions.indexOf(q);
+    return answers[globalIndex] === q.correct_answer;
+  }).length;
 
   const totalMcq = mcqQuestions.length;
   const percentage = totalMcq > 0 ? Math.round((correctAnswers / totalMcq) * 100) : 0;
@@ -48,6 +64,9 @@ function Results() {
           <h1 className="score-label" style={{ color: gradeInfo.color }}>
             {gradeInfo.label}
           </h1>
+          {saved && (
+            <p className="saved-indicator">✅ Quiz saved to your history</p>
+          )}
           <div className="score-stats">
             <div className="score-stat">
               <span className="score-number">{correctAnswers}/{totalMcq}</span>
@@ -64,16 +83,11 @@ function Results() {
               <span className="score-desc">Total Questions</span>
             </div>
           </div>
-
-          {/* Score Bar */}
           <div className="score-bar-container">
             <div className="score-bar">
               <div
                 className="score-bar-fill"
-                style={{
-                  width: `${percentage}%`,
-                  background: gradeInfo.color
-                }}
+                style={{ width: `${percentage}%`, background: gradeInfo.color }}
               />
             </div>
           </div>
@@ -81,16 +95,10 @@ function Results() {
 
         {/* ACTION BUTTONS */}
         <div className="results-actions">
-          <button
-            className="action-btn primary"
-            onClick={() => navigate("/quiz")}
-          >
+          <button className="action-btn primary" onClick={() => navigate("/quiz")}>
             ⚡ Generate New Quiz
           </button>
-          <button
-            className="action-btn secondary"
-            onClick={() => window.print()}
-          >
+          <button className="action-btn secondary" onClick={() => window.print()}>
             🖨️ Print Results
           </button>
         </div>
@@ -127,7 +135,6 @@ function Results() {
 
                 <p className="review-question">{q.question}</p>
 
-                {/* MCQ Review */}
                 {q.type === "mcq" && (
                   <div className="review-options">
                     {Object.entries(q.options).map(([key, value]) => (
@@ -152,7 +159,6 @@ function Results() {
                   </div>
                 )}
 
-                {/* Short Answer Review */}
                 {q.type === "short" && (
                   <div className="review-short-answer">
                     <p className="review-answer-label">📝 Answer:</p>

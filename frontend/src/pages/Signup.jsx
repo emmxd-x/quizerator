@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthContext";
 import "./Login.css";
@@ -13,6 +13,14 @@ function Signup() {
   const [confirm, setConfirm] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setFullName("");
+    setEmail("");
+    setPassword("");
+    setConfirm("");
+    setError("");
+  }, []);
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -61,6 +69,7 @@ function Signup() {
               placeholder="Your name"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
+              autoComplete="off"
               required
             />
           </div>
@@ -72,6 +81,7 @@ function Signup() {
               placeholder="you@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              autoComplete="off"
               required
             />
           </div>
@@ -83,6 +93,7 @@ function Signup() {
               placeholder="Min 6 characters"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              autoComplete="new-password"
               required
             />
           </div>
@@ -94,6 +105,7 @@ function Signup() {
               placeholder="••••••••"
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
+              autoComplete="new-password"
               required
             />
           </div>
