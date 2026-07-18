@@ -24,14 +24,23 @@ function Navbar() {
         >
           Home
         </Link>
+        
         {(user || isGuest) && (
-          <Link
-            to="/quiz"
-            className={`nav-link ${location.pathname === "/quiz" ? "active" : ""}`}
-          >
-            Generate Quiz
-          </Link>
-        )}
+  <Link
+    to="/quiz"
+    className={`nav-link ${location.pathname === "/quiz" ? "active" : ""}`}
+  >
+    Generate Quiz
+  </Link>
+)}
+{user && (
+  <Link
+    to="/history"
+    className={`nav-link ${location.pathname === "/history" ? "active" : ""}`}
+  >
+    My History
+  </Link>
+)}
 
         {user ? (
           <button className="nav-btn signout" onClick={handleSignOut}>

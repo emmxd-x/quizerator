@@ -13,22 +13,23 @@ function Results() {
   const { quiz, answers, settings } = location.state || {};
   const [saved, setSaved] = useState(false);
 
-  useEffect(() => {
-    if (!quiz) {
-      navigate("/quiz");
-      return;
-    }
-    if (user && !hasSaved.current) {
-      hasSaved.current = true;
-      saveQuiz(user.id, quiz, settings || {
-        difficulty: "medium",
-        num_mcq: quiz.questions.filter(q => q.type === "mcq").length,
-        num_short: quiz.questions.filter(q => q.type === "short").length,
-      }, answers).then((result) => {
-        if (result) setSaved(true);
-      });
-    }
-  }, []);
+  
+useEffect(() => {
+  if (!quiz) {
+    navigate("/quiz");
+    return;
+  }
+  if (user && !hasSaved.current && !location.state?.fromHistory) {
+    hasSaved.current = true;
+    saveQuiz(user.id, quiz, settings || {
+      difficulty: "medium",
+      num_mcq: quiz.questions.filter(q => q.type === "mcq").length,
+      num_short: quiz.questions.filter(q => q.type === "short").length,
+    }, answers).then((result) => {
+      if (result) setSaved(true);
+    });
+  }
+}, []);
 
   if (!quiz) return null;
 

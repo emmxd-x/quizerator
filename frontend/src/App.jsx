@@ -6,6 +6,7 @@ import Quiz from "./pages/Quiz";
 import Results from "./pages/Results";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import History from "./pages/History";
 import "./App.css";
 
 function ProtectedRoute({ children }) {
@@ -32,6 +33,11 @@ function App() {
         <Route path="/results" element={
           <ProtectedRoute>
             <Results />
+          </ProtectedRoute>
+        } />
+        <Route path="/history" element={
+          <ProtectedRoute>
+            <History />
           </ProtectedRoute>
         } />
       </Routes>
