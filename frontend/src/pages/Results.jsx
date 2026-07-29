@@ -1,3 +1,4 @@
+import { downloadQuizPDF, downloadResultsPDF } from "../pdfExport";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import { useAuth } from "../AuthContext";
@@ -94,15 +95,24 @@ useEffect(() => {
           </div>
         </div>
 
-        {/* ACTION BUTTONS */}
-        <div className="results-actions">
-          <button className="action-btn primary" onClick={() => navigate("/quiz")}>
-            ⚡ Generate New Quiz
-          </button>
-          <button className="action-btn secondary" onClick={() => window.print()}>
-            🖨️ Print Results
-          </button>
-        </div>
+       {/* ACTION BUTTONS */}
+<div className="results-actions">
+  <button className="action-btn primary" onClick={() => navigate("/quiz")}>
+    ⚡ Generate New Quiz
+  </button>
+  <button
+    className="action-btn secondary"
+    onClick={() => downloadResultsPDF(quiz, answers, correctAnswers, totalMcq, percentage)}
+  >
+    📥 Download Results PDF
+  </button>
+  <button
+    className="action-btn outline"
+    onClick={() => downloadQuizPDF(quiz, settings)}
+  >
+    📄 Download Quiz PDF
+  </button>
+</div>
 
         {/* REVIEW SECTION */}
         <div className="review-section">

@@ -1,3 +1,4 @@
+import { downloadQuizPDF, downloadResultsPDF } from "../pdfExport";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthContext";
@@ -221,10 +222,12 @@ function History() {
 
                 {/* Reopen Button */}
                 {deletingId !== quiz.id && (
-                  <button className="reopen-btn" onClick={() => handleReopen(quiz.id)}>
-                    View Results →
-                  </button>
-                )}
+  <div className="history-card-buttons">
+    <button className="reopen-btn" onClick={() => handleReopen(quiz.id)}>
+      View Results →
+    </button>
+  </div>
+)}
 
               </div>
             ))}
