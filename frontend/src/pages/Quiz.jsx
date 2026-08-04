@@ -22,14 +22,14 @@ function Quiz() {
   const [timePerQuestion, setTimePerQuestion] = useState(60);
 
   // Quiz state
-  const [step, setStep] = useState("upload"); // upload | loading | quiz
+  const [step, setStep] = useState("upload");
   const [quiz, setQuiz] = useState(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [revealed, setRevealed] = useState({});
   const [answers, setAnswers] = useState({});
+  const [selfAssessments, setSelfAssessments] = useState({});
   const [error, setError] = useState("");
 
-  // File handling
   const handleFiles = (newFiles) => {
     const valid = Array.from(newFiles).filter(
       (f) => f.name.endsWith(".pdf") || f.name.endsWith(".docx")
@@ -53,7 +53,6 @@ function Quiz() {
     handleFiles(e.dataTransfer.files);
   };
 
-  // Submit
   const handleSubmit = async () => {
     if (files.length === 0) {
       setError("Please upload at least one file.");
@@ -76,6 +75,7 @@ function Quiz() {
       setQuiz(response.data.quiz);
       setRevealed({});
       setAnswers({});
+      setSelfAssessments({});
       setCurrentQuestion(0);
       setStep("quiz");
     } catch (err) {
@@ -91,6 +91,10 @@ function Quiz() {
     setRevealed((prev) => ({ ...prev, [index]: true }));
   };
 
+  const handleSelfAssess = (index, correct) => {
+    setSelfAssessments((prev) => ({ ...prev, [index]: correct }));
+  };
+
   const handleTimerExpire = () => {
     setRevealed((prev) => ({ ...prev, [currentQuestion]: true }));
     setTimeout(() => {
@@ -104,18 +108,18 @@ function Quiz() {
     if (currentQuestion < quiz.questions.length - 1) {
       setCurrentQuestion((prev) => prev + 1);
     } else {
-      // Go to results
       navigate("/results", {
-  state: {
-    quiz,
-    answers,
-    settings: {
-      difficulty,
-      num_mcq: numMcq,
-      num_short: numShort,
-    }
-  },
-});
+        state: {
+          quiz,
+          answers,
+          selfAssessments,
+          settings: {
+            difficulty,
+            num_mcq: numMcq,
+            num_short: numShort,
+          }
+        },
+      });
     }
   };
 
@@ -131,6 +135,7 @@ function Quiz() {
     setQuiz(null);
     setRevealed({});
     setAnswers({});
+    setSelfAssessments({});
     setCurrentQuestion(0);
     setError("");
   };
@@ -147,12 +152,10 @@ function Quiz() {
           </div>
 
           <div className="quiz-layout">
-            {/* LEFT: File Upload */}
             <div className="quiz-card">
               <h2 className="card-title">📄 Upload Files</h2>
               <p className="card-subtitle">Upload up to 3 PDF or DOCX files</p>
 
-              {/* Drop Zone */}
               <div
                 className={`drop-zone ${dragging ? "dragging" : ""}`}
                 onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
@@ -174,7 +177,6 @@ function Quiz() {
                 />
               </div>
 
-              {/* File Cards */}
               {files.length > 0 && (
                 <div className="file-list">
                   {files.map((file, index) => (
@@ -200,7 +202,6 @@ function Quiz() {
               )}
             </div>
 
-            {/* RIGHT: Settings */}
             <div className="quiz-card">
               <h2 className="card-title">⚙️ Quiz Settings</h2>
               <p className="card-subtitle">Configure your quiz preferences</p>
@@ -315,7 +316,6 @@ function Quiz() {
       {/* QUIZ STEP */}
       {step === "quiz" && quiz && (
         <div className="quiz-container">
-          {/* Progress Bar */}
           <div className="progress-bar-container">
             <div className="progress-info">
               <span>Question {currentQuestion + 1} of {quiz.questions.length}</span>
@@ -329,7 +329,6 @@ function Quiz() {
             </div>
           </div>
 
-          {/* Timer */}
           {timerEnabled && (
             <Timer
               key={currentQuestion}
@@ -338,7 +337,6 @@ function Quiz() {
             />
           )}
 
-          {/* Question Card */}
           <QuestionCard
             question={quiz.questions[currentQuestion]}
             index={currentQuestion}
@@ -346,9 +344,10 @@ function Quiz() {
             selectedAnswer={answers[currentQuestion]}
             onAnswer={handleAnswer}
             onReveal={() => setRevealed((prev) => ({ ...prev, [currentQuestion]: true }))}
+            onSelfAssess={handleSelfAssess}
+            selfAssessed={selfAssessments[currentQuestion]}
           />
 
-          {/* Navigation */}
           <div className="quiz-navigation">
             <button
               className="nav-btn-quiz secondary"

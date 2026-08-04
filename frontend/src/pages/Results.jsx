@@ -1,8 +1,8 @@
-import { downloadQuizPDF, downloadResultsPDF } from "../pdfExport";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import { useAuth } from "../AuthContext";
 import { saveQuiz } from "../quizService";
+import { downloadQuizPDF, downloadResultsPDF } from "../pdfExport";
 import "./Results.css";
 
 function Results() {
@@ -11,37 +11,49 @@ function Results() {
   const { user } = useAuth();
   const hasSaved = useRef(false);
 
-  const { quiz, answers, settings } = location.state || {};
+  const { quiz, answers, settings, selfAssessments } = location.state || {};
   const [saved, setSaved] = useState(false);
 
-  
-useEffect(() => {
-  if (!quiz) {
-    navigate("/quiz");
-    return;
-  }
-  if (user && !hasSaved.current && !location.state?.fromHistory) {
-    hasSaved.current = true;
-    saveQuiz(user.id, quiz, settings || {
-      difficulty: "medium",
-      num_mcq: quiz.questions.filter(q => q.type === "mcq").length,
-      num_short: quiz.questions.filter(q => q.type === "short").length,
-    }, answers).then((result) => {
-      if (result) setSaved(true);
-    });
-  }
-}, []);
+  useEffect(() => {
+    if (!quiz) {
+      navigate("/quiz");
+      return;
+    }
+    if (user && !hasSaved.current && !location.state?.fromHistory) {
+      hasSaved.current = true;
+      saveQuiz(user.id, quiz, settings || {
+        difficulty: "medium",
+        num_mcq: quiz.questions.filter(q => q.type === "mcq").length,
+        num_short: quiz.questions.filter(q => q.type === "short").length,
+      }, answers).then((result) => {
+        if (result) {
+          setSaved(true);
+          window.history.replaceState({}, '');
+        }
+      });
+    }
+  }, []);
 
   if (!quiz) return null;
 
   const mcqQuestions = quiz.questions.filter((q) => q.type === "mcq");
-  const correctAnswers = mcqQuestions.filter((q) => {
+  const shortQuestions = quiz.questions.filter((q) => q.type === "short");
+
+  const correctMcq = mcqQuestions.filter((q) => {
     const globalIndex = quiz.questions.indexOf(q);
     return answers[globalIndex] === q.correct_answer;
   }).length;
 
+  const correctShort = shortQuestions.filter((q) => {
+    const globalIndex = quiz.questions.indexOf(q);
+    return selfAssessments?.[globalIndex] === true;
+  }).length;
+
+  const correctAnswers = correctMcq + correctShort;
   const totalMcq = mcqQuestions.length;
-  const percentage = totalMcq > 0 ? Math.round((correctAnswers / totalMcq) * 100) : 0;
+  const totalShort = shortQuestions.length;
+  const totalQuestions = quiz.questions.length;
+  const percentage = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0;
 
   const getGrade = () => {
     if (percentage >= 90) return { grade: "A+", color: "#276749", bg: "#f0fff4", label: "Excellent!" };
@@ -71,18 +83,18 @@ useEffect(() => {
           )}
           <div className="score-stats">
             <div className="score-stat">
-              <span className="score-number">{correctAnswers}/{totalMcq}</span>
+              <span className="score-number">{correctMcq}/{totalMcq}</span>
               <span className="score-desc">MCQs Correct</span>
             </div>
             <div className="score-divider" />
             <div className="score-stat">
-              <span className="score-number">{percentage}%</span>
-              <span className="score-desc">Score</span>
+              <span className="score-number">{correctShort}/{totalShort}</span>
+              <span className="score-desc">Short Correct</span>
             </div>
             <div className="score-divider" />
             <div className="score-stat">
-              <span className="score-number">{quiz.questions.length}</span>
-              <span className="score-desc">Total Questions</span>
+              <span className="score-number">{percentage}%</span>
+              <span className="score-desc">Overall Score</span>
             </div>
           </div>
           <div className="score-bar-container">
@@ -95,24 +107,24 @@ useEffect(() => {
           </div>
         </div>
 
-       {/* ACTION BUTTONS */}
-<div className="results-actions">
-  <button className="action-btn primary" onClick={() => navigate("/quiz")}>
-    ⚡ Generate New Quiz
-  </button>
-  <button
-    className="action-btn secondary"
-    onClick={() => downloadResultsPDF(quiz, answers, correctAnswers, totalMcq, percentage)}
-  >
-    📥 Download Results PDF
-  </button>
-  <button
-    className="action-btn outline"
-    onClick={() => downloadQuizPDF(quiz, settings)}
-  >
-    📄 Download Quiz PDF
-  </button>
-</div>
+        {/* ACTION BUTTONS */}
+        <div className="results-actions">
+          <button className="action-btn primary" onClick={() => navigate("/quiz")}>
+            ⚡ Generate New Quiz
+          </button>
+          <button
+            className="action-btn secondary"
+            onClick={() => downloadResultsPDF(quiz, answers, correctAnswers, totalQuestions, percentage)}
+          >
+            📥 Download Results PDF
+          </button>
+          <button
+            className="action-btn outline"
+            onClick={() => downloadQuizPDF(quiz, settings)}
+          >
+            📄 Download Quiz PDF
+          </button>
+        </div>
 
         {/* REVIEW SECTION */}
         <div className="review-section">
@@ -124,11 +136,13 @@ useEffect(() => {
             const isCorrect = q.type === "mcq" && userAnswer === q.correct_answer;
             const isWrong = q.type === "mcq" && userAnswer && userAnswer !== q.correct_answer;
             const isSkipped = q.type === "mcq" && !userAnswer;
+            const shortCorrect = q.type === "short" && selfAssessments?.[index] === true;
+            const shortWrong = q.type === "short" && selfAssessments?.[index] === false;
 
             return (
               <div
                 key={index}
-                className={`review-card ${isCorrect ? "correct" : isWrong ? "wrong" : isSkipped ? "skipped" : "short"}`}
+                className={`review-card ${isCorrect || shortCorrect ? "correct" : isWrong || shortWrong ? "wrong" : isSkipped ? "skipped" : "short"}`}
               >
                 <div className="review-card-header">
                   <div className="review-meta">
@@ -140,6 +154,11 @@ useEffect(() => {
                   {q.type === "mcq" && (
                     <span className={`review-status ${isCorrect ? "correct" : isWrong ? "wrong" : "skipped"}`}>
                       {isCorrect ? "✅ Correct" : isWrong ? "❌ Wrong" : "⏭️ Skipped"}
+                    </span>
+                  )}
+                  {q.type === "short" && selfAssessments?.[index] !== undefined && (
+                    <span className={`review-status ${shortCorrect ? "correct" : "wrong"}`}>
+                      {shortCorrect ? "✅ Self: Correct" : "❌ Self: Wrong"}
                     </span>
                   )}
                 </div>

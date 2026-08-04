@@ -1,7 +1,5 @@
 function formatAnswer(text) {
   if (!text) return null;
-  
-  // Check if answer contains bullet points
   if (text.includes("•")) {
     const parts = text.split("•").filter(p => p.trim());
     return (
@@ -12,11 +10,10 @@ function formatAnswer(text) {
       </ul>
     );
   }
-  
   return <p>{text}</p>;
 }
 
-function QuestionCard({ question, index, revealed, selectedAnswer, onAnswer, onReveal }) {
+function QuestionCard({ question, index, revealed, selectedAnswer, onAnswer, onReveal, onSelfAssess, selfAssessed }) {
   return (
     <div className="question-card-new">
       <div className="question-meta">
@@ -48,18 +45,25 @@ function QuestionCard({ question, index, revealed, selectedAnswer, onAnswer, onR
         </div>
       )}
 
-      {/* Show Answer Button */}
-      {!revealed && (
-        <button className="reveal-btn" onClick={onReveal}>
-          Show Answer
-        </button>
-      )}
+      {/* Show Answer Button - only for short answer */}
+{!revealed && question.type === "short" && (
+  <button className="reveal-btn" onClick={onReveal}>
+    Show Answer
+  </button>
+)}
+
+{/* MCQ - auto reveal when option clicked */}
+{!revealed && question.type === "mcq" && (
+  <button className="reveal-btn" onClick={onReveal}>
+    Show Correct Answer
+  </button>
+)}
 
       {/* Answer Revealed */}
       {revealed && (
         <div className="answer-revealed">
 
-          {/* MCQ: show correct option + explanation */}
+          {/* MCQ */}
           {question.type === "mcq" && (
             <>
               <div className="correct-answer">
@@ -73,14 +77,42 @@ function QuestionCard({ question, index, revealed, selectedAnswer, onAnswer, onR
             </>
           )}
 
-          {/* Short Answer: show formatted answer only once */}
+          {/* Short Answer */}
           {question.type === "short" && (
-            <div className="short-answer">
-              <p className="short-answer-label">📝 Answer:</p>
-              {formatAnswer(question.correct_answer)}
-            </div>
-          )}
+            <>
+              <div className="short-answer">
+                <p className="short-answer-label">📝 Answer:</p>
+                {formatAnswer(question.correct_answer)}
+              </div>
 
+              {/* Self Assessment */}
+              {selfAssessed === undefined && (
+                <div className="self-assess">
+                  <p className="self-assess-label">Did you get this right?</p>
+                  <div className="self-assess-buttons">
+                    <button
+                      className="self-assess-btn yes"
+                      onClick={() => onSelfAssess(index, true)}
+                    >
+                      ✅ Yes, I got it
+                    </button>
+                    <button
+                      className="self-assess-btn no"
+                      onClick={() => onSelfAssess(index, false)}
+                    >
+                      ❌ No, I missed it
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {selfAssessed !== undefined && (
+                <div className={`self-assess-result ${selfAssessed ? "correct" : "wrong"}`}>
+                  {selfAssessed ? "✅ You marked this as correct" : "❌ You marked this as incorrect"}
+                </div>
+              )}
+            </>
+          )}
         </div>
       )}
     </div>

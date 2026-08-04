@@ -543,3 +543,75 @@ body {
   margin-bottom: 8px;
   font-size: 0.9rem;
 }
+
+/* SELF ASSESSMENT */
+.self-assess {
+  margin-top: 14px;
+  padding: 14px;
+  background: #f8faff;
+  border: 1px solid #dbeafe;
+  border-radius: 10px;
+}
+
+.self-assess-label {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #1e3a5f;
+  margin-bottom: 10px;
+}
+
+.self-assess-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.self-assess-btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+
+.self-assess-btn.yes {
+  background: #f0fff4;
+  color: #276749;
+  border: 1px solid #68d391;
+}
+
+.self-assess-btn.yes:hover {
+  background: #c6f6d5;
+}
+
+.self-assess-btn.no {
+  background: #fff5f5;
+  color: #742a2a;
+  border: 1px solid #fc8181;
+}
+
+.self-assess-btn.no:hover {
+  background: #fed7d7;
+}
+
+.self-assess-result {
+  margin-top: 10px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.self-assess-result.correct {
+  background: #f0fff4;
+  color: #276749;
+  border: 1px solid #68d391;
+}
+
+.self-assess-result.wrong {
+  background: #fff5f5;
+  color: #742a2a;
+  border: 1px solid #fc8181;
+}
