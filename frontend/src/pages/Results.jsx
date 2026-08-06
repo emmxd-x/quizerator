@@ -11,7 +11,7 @@ function Results() {
   const { user } = useAuth();
   const hasSaved = useRef(false);
 
-  const { quiz, answers, settings, selfAssessments } = location.state || {};
+  const { quiz, answers, settings, selfAssessments, collectionId } = location.state || {};
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
@@ -20,18 +20,22 @@ function Results() {
       return;
     }
     if (user && !hasSaved.current && !location.state?.fromHistory) {
-      hasSaved.current = true;
-      saveQuiz(user.id, quiz, settings || {
-        difficulty: "medium",
-        num_mcq: quiz.questions.filter(q => q.type === "mcq").length,
-        num_short: quiz.questions.filter(q => q.type === "short").length,
-      }, answers).then((result) => {
-        if (result) {
-          setSaved(true);
-          window.history.replaceState({}, '');
-        }
-      });
+  hasSaved.current = true;
+  saveQuiz(user.id, quiz, {
+    ...settings,
+    collection_id: collectionId,
+  } || {
+    difficulty: "medium",
+    num_mcq: quiz.questions.filter(q => q.type === "mcq").length,
+    num_short: quiz.questions.filter(q => q.type === "short").length,
+    collection_id: collectionId,
+  }, answers).then((result) => {
+    if (result) {
+      setSaved(true);
+      window.history.replaceState({}, '');
     }
+  });
+}
   }, []);
 
   if (!quiz) return null;

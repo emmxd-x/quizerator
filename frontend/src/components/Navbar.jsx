@@ -42,6 +42,15 @@ function Navbar() {
   </Link>
 )}
 
+{user && (
+  <Link
+    to="/dashboard"
+    className={`nav-link ${location.pathname === "/dashboard" ? "active" : ""}`}
+  >
+    Dashboard
+  </Link>
+)}
+
         {user ? (
           <button className="nav-btn signout" onClick={handleSignOut}>
             Sign Out

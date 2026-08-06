@@ -29,7 +29,7 @@ function Login() {
       setError(error.message);
       setLoading(false);
     } else {
-      navigate("/quiz");
+    navigate("/dashboard");
     }
   };
 

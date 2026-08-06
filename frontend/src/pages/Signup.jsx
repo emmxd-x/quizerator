@@ -49,7 +49,7 @@ function Signup() {
 
   const handleGuest = () => {
     continueAsGuest();
-    navigate("/quiz");
+    navigate("/dashboard");
   };
 
   return (

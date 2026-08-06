@@ -472,3 +472,15 @@
   opacity: 0.4;
   cursor: not-allowed;
 }
+
+.collection-select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #93c5fd;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #1e3a5f;
+  background: white;
+  outline: none;
+  margin-top: 8px;
+}

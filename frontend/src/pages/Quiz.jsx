@@ -1,14 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import QuestionCard from "../components/QuestionCard";
 import Timer from "../components/Timer";
+import { getUserCollections } from "../quizService";
+import { useAuth } from "../AuthContext";
 import "./Quiz.css";
 
 const BACKEND_URL = "https://emmxd-x-quizerator-api.hf.space";
 
 function Quiz() {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   // File state
   const [files, setFiles] = useState([]);
@@ -21,6 +24,10 @@ function Quiz() {
   const [timerEnabled, setTimerEnabled] = useState(false);
   const [timePerQuestion, setTimePerQuestion] = useState(60);
 
+  // Collection state
+  const [collections, setCollections] = useState([]);
+  const [selectedCollection, setSelectedCollection] = useState("");
+
   // Quiz state
   const [step, setStep] = useState("upload");
   const [quiz, setQuiz] = useState(null);
@@ -29,6 +36,12 @@ function Quiz() {
   const [answers, setAnswers] = useState({});
   const [selfAssessments, setSelfAssessments] = useState({});
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (user) {
+      getUserCollections(user.id).then(setCollections);
+    }
+  }, [user]);
 
   const handleFiles = (newFiles) => {
     const valid = Array.from(newFiles).filter(
@@ -66,6 +79,7 @@ function Quiz() {
     formData.append("difficulty", difficulty);
     formData.append("num_mcq", numMcq);
     formData.append("num_short", numShort);
+    formData.append("collection_id", selectedCollection);
 
     try {
       const response = await axios.post(
@@ -113,6 +127,7 @@ function Quiz() {
           quiz,
           answers,
           selfAssessments,
+          collectionId: selectedCollection,
           settings: {
             difficulty,
             num_mcq: numMcq,
@@ -136,6 +151,7 @@ function Quiz() {
     setRevealed({});
     setAnswers({});
     setSelfAssessments({});
+    setSelectedCollection("");
     setCurrentQuestion(0);
     setError("");
   };
@@ -281,6 +297,26 @@ function Quiz() {
                     </div>
                   )}
                 </div>
+
+                {/* Collection Selector */}
+                {user && collections.length > 0 && (
+                  <div className="setting-item">
+                    <label>Add to Collection</label>
+                    <select
+                      value={selectedCollection}
+                      onChange={(e) => setSelectedCollection(e.target.value)}
+                      className="collection-select"
+                    >
+                      <option value="">No collection</option>
+                      {collections.map((col) => (
+                        <option key={col.id} value={col.id}>
+                          {col.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
               </div>
 
               {error && <p className="error-msg">{error}</p>}
