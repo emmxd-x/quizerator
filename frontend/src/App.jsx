@@ -10,6 +10,7 @@ import History from "./pages/History";
 import "./App.css";
 import Dashboard from "./pages/Dashboard";
 import CollectionDetail from "./pages/CollectionDetail";
+import Profile from "./pages/Profile";
 
 function ProtectedRoute({ children }) {
   const { user, isGuest } = useAuth();
@@ -50,6 +51,11 @@ function App() {
 <Route path="/collection/:id" element={
   <ProtectedRoute>
     <CollectionDetail />
+  </ProtectedRoute>
+} />
+<Route path="/profile" element={
+  <ProtectedRoute>
+    <Profile />
   </ProtectedRoute>
 } />
       </Routes>
