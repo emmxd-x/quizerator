@@ -79,25 +79,22 @@ function History() {
     });
   };
 
-  const getGradeColor = (score, total) => {
-    if (!total) return "#718096";
-    const pct = (score / total) * 100;
-    if (pct >= 80) return "#276749";
-    if (pct >= 60) return "#744210";
-    if (pct >= 50) return "#92400e";
-    return "#742a2a";
-  };
+  const getGradeColor = (quiz) => {
+  const pct = quiz.overall_score ?? (quiz.total_mcq ? Math.round((quiz.score / quiz.total_mcq) * 100) : 0);
+  if (pct >= 70) return "#276749";
+  if (pct >= 50) return "#744210";
+  return "#742a2a";
+};
 
-  const getGradeLetter = (score, total) => {
-    if (!total) return "—";
-    const pct = (score / total) * 100;
-    if (pct >= 90) return "A+";
-    if (pct >= 80) return "A";
-    if (pct >= 70) return "B";
-    if (pct >= 60) return "C";
-    if (pct >= 50) return "D";
-    return "F";
-  };
+const getGradeLetter = (quiz) => {
+  const pct = quiz.overall_score ?? (quiz.total_mcq ? Math.round((quiz.score / quiz.total_mcq) * 100) : 0);
+  if (pct >= 90) return "A+";
+  if (pct >= 80) return "A";
+  if (pct >= 70) return "B";
+  if (pct >= 60) return "C";
+  if (pct >= 50) return "D";
+  return "F";
+};
 
   if (loading) {
     return (
@@ -140,10 +137,10 @@ function History() {
                 {/* Card Header */}
                 <div className="history-card-header">
                   <div
-                    className="history-grade"
-                    style={{ color: getGradeColor(quiz.score, quiz.total_mcq) }}
-                  >
-                    {getGradeLetter(quiz.score, quiz.total_mcq)}
+                    className={`history-grade`}
+style={{ color: getGradeColor(quiz) }}
+>
+{getGradeLetter(quiz)}
                   </div>
                   <div className="history-card-actions">
                     <button

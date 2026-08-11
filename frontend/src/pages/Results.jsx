@@ -22,14 +22,16 @@ function Results() {
     if (user && !hasSaved.current && !location.state?.fromHistory) {
   hasSaved.current = true;
   saveQuiz(user.id, quiz, {
-    ...settings,
-    collection_id: collectionId,
-  } || {
-    difficulty: "medium",
-    num_mcq: quiz.questions.filter(q => q.type === "mcq").length,
-    num_short: quiz.questions.filter(q => q.type === "short").length,
-    collection_id: collectionId,
-  }, answers).then((result) => {
+  ...settings,
+  collection_id: collectionId,
+  overall_score: percentage,
+} || {
+  difficulty: "medium",
+  num_mcq: quiz.questions.filter(q => q.type === "mcq").length,
+  num_short: quiz.questions.filter(q => q.type === "short").length,
+  collection_id: collectionId,
+  overall_score: percentage,
+}, answers).then((result) => {
     if (result) {
       setSaved(true);
       window.history.replaceState({}, '');

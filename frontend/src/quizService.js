@@ -21,6 +21,7 @@ export async function saveQuiz(userId, quizData, settings, answers) {
     score: correctCount,
     total_mcq: mcqQuestions.length,
     collection_id: settings.collection_id || null,
+    overall_score: settings.overall_score || null,
   })
     .select()
     .single();

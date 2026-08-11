@@ -147,24 +147,22 @@ function Dashboard() {
 
   const recentQuizzes = stats.slice(0, 5);
 
-  const getGrade = (score, total) => {
-    if (!total) return "—";
-    const pct = (score / total) * 100;
-    if (pct >= 90) return "A+";
-    if (pct >= 80) return "A";
-    if (pct >= 70) return "B";
-    if (pct >= 60) return "C";
-    if (pct >= 50) return "D";
-    return "F";
-  };
+  const getGrade = (quiz) => {
+  const pct = quiz.overall_score ?? (quiz.total_mcq ? Math.round((quiz.score / quiz.total_mcq) * 100) : 0);
+  if (pct >= 90) return "A+";
+  if (pct >= 80) return "A";
+  if (pct >= 70) return "B";
+  if (pct >= 60) return "C";
+  if (pct >= 50) return "D";
+  return "F";
+};
 
-  const getGradeColor = (score, total) => {
-    if (!total) return "#718096";
-    const pct = (score / total) * 100;
-    if (pct >= 70) return "#276749";
-    if (pct >= 50) return "#744210";
-    return "#742a2a";
-  };
+const getGradeColor = (quiz) => {
+  const pct = quiz.overall_score ?? (quiz.total_mcq ? Math.round((quiz.score / quiz.total_mcq) * 100) : 0);
+  if (pct >= 70) return "#276749";
+  if (pct >= 50) return "#744210";
+  return "#742a2a";
+};
 
   if (loading) {
     return (
@@ -295,11 +293,11 @@ function Dashboard() {
               {recentQuizzes.map((quiz) => (
                 <div key={quiz.id} className="recent-row">
                   <div
-                    className="recent-grade"
-                    style={{ color: getGradeColor(quiz.score, quiz.total_mcq) }}
-                  >
-                    {getGrade(quiz.score, quiz.total_mcq)}
-                  </div>
+  className="recent-grade"
+  style={{ color: getGradeColor(quiz) }}
+>
+  {getGrade(quiz)}
+</div>
                   <div className="recent-info">
                     <p className="recent-title">{quiz.title}</p>
                     <p className="recent-meta">
