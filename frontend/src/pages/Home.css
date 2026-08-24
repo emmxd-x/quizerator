@@ -362,25 +362,54 @@
 @media (max-width: 768px) {
   .hero {
     flex-direction: column;
-    padding: 60px 32px;
+    padding: 40px 20px;
     text-align: center;
   }
 
-  .hero-content {
-    max-width: 100%;
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .hero-buttons {
+    justify-content: center;
   }
 
   .hero-visual {
     max-width: 100%;
   }
 
+  .features {
+    padding: 40px 20px;
+  }
+
   .features-grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .how-it-works {
+    padding: 40px 20px;
   }
 
   .steps {
     flex-direction: column;
-    gap: 24px;
+  }
+
+  .step-arrow {
+    transform: rotate(90deg);
+  }
+
+  .cta {
+    padding: 40px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-stats {
+    flex-wrap: wrap;
+    justify-content: center;
   }
 }

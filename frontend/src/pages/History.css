@@ -327,3 +327,19 @@
 .reopen-btn:hover {
   background: #dbeafe;
 }
+
+@media (max-width: 768px) {
+  .history-page {
+    padding: 20px 16px;
+  }
+
+  .history-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .history-grid {
+    grid-template-columns: 1fr;
+  }
+}

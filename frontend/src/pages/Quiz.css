@@ -486,12 +486,27 @@
 }
 
 @media (max-width: 768px) {
+  .quiz-page {
+    padding: 20px 16px;
+  }
+
   .quiz-layout {
     grid-template-columns: 1fr;
   }
 
+  .quiz-header h1 {
+    font-size: 1.4rem;
+  }
+
   .quiz-navigation {
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: 8px;
+  }
+
+  .nav-btn-quiz {
+    flex: 1;
+    min-width: 80px;
+    padding: 10px 12px;
+    font-size: 0.82rem;
   }
 }

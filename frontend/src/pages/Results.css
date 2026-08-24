@@ -360,3 +360,21 @@
   justify-content: center;
   flex-wrap: wrap;
 }
+
+@media (max-width: 768px) {
+  .results-page {
+    padding: 20px 16px;
+  }
+
+  .score-stats {
+    gap: 16px;
+  }
+
+  .results-actions {
+    flex-direction: column;
+  }
+
+  .action-btn {
+    width: 100%;
+  }
+}
