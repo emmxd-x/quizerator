@@ -338,3 +338,15 @@
   font-weight: 600;
   color: #718096;
 }
+
+@media (max-width: 768px) {
+  .dashboard-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dashboard-welcome {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}

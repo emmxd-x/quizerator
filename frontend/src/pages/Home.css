@@ -358,3 +358,29 @@
 .cta .btn-primary-lg:hover {
   opacity: 0.95;
 }
+
+@media (max-width: 768px) {
+  .hero {
+    flex-direction: column;
+    padding: 60px 32px;
+    text-align: center;
+  }
+
+  .hero-content {
+    max-width: 100%;
+  }
+
+  .hero-visual {
+    max-width: 100%;
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .steps {
+    flex-direction: column;
+    gap: 24px;
+  }
+}
