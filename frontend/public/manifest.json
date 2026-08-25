@@ -1,0 +1,17 @@
+{
+  "name": "Quizerator",
+  "short_name": "Quizerator",
+  "description": "AI-Powered Quiz Generator",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#eff6ff",
+  "theme_color": "#1d4ed8",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/vite.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
