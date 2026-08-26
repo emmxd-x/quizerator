@@ -168,3 +168,31 @@
   -webkit-box-shadow: 0 0 0px 1000px white inset;
   transition: background-color 5000s ease-in-out 0s;
 }
+
+.verification-sent {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.verification-icon {
+  font-size: 3rem;
+  margin-bottom: 16px;
+}
+
+.verification-sent h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1e3a5f;
+  margin-bottom: 12px;
+}
+
+.verification-sent p {
+  color: #718096;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+  line-height: 1.6;
+}
+
+.verification-sent .auth-btn {
+  margin-top: 20px;
+}

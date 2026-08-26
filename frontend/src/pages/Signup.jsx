@@ -13,6 +13,7 @@ function Signup() {
   const [confirm, setConfirm] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [verificationSent, setVerificationSent] = useState(false);
 
   useEffect(() => {
     setFullName("");
@@ -23,29 +24,33 @@ function Signup() {
   }, []);
 
   const handleSignup = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
+  setError("");
+
+  if (password !== confirm) {
+    setError("Passwords do not match.");
+    return;
+  }
+
+  if (password.length < 6) {
+    setError("Password must be at least 6 characters.");
+    return;
+  }
+
+  setLoading(true);
+  const { error } = await signUp(email, password, fullName);
+
+  if (error) {
+    setError(error.message);
+    setLoading(false);
+  } else {
+    // Show verification message instead of redirecting
+    setLoading(false);
     setError("");
-
-    if (password !== confirm) {
-      setError("Passwords do not match.");
-      return;
-    }
-
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters.");
-      return;
-    }
-
-    setLoading(true);
-    const { error } = await signUp(email, password, fullName);
-
-    if (error) {
-      setError(error.message);
-      setLoading(false);
-    } else {
-      navigate("/quiz");
-    }
-  };
+    // Replace the form with success message
+    setVerificationSent(true);
+  }
+};
 
   const handleGuest = () => {
     continueAsGuest();
@@ -130,6 +135,22 @@ function Signup() {
           <Link to="/login">Sign in</Link>
         </p>
       </div>
+      {verificationSent ? (
+  <div className="verification-sent">
+    <div className="verification-icon">✅</div>
+    <h2>Check your email!</h2>
+    <p>We sent a verification link to <strong>{email}</strong></p>
+    <p>Click the link in the email to activate your account.</p>
+    <button className="auth-btn primary" onClick={() => navigate("/login")}>
+      Go to Login
+    </button>
+  </div>
+) : (
+  // existing form content
+  <>
+    ...your existing form JSX...
+  </>
+)}
     </div>
   );
 }
