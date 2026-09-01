@@ -1,4 +1,4 @@
-const CACHE_NAME = 'quizerator-v1';
+const CACHE_NAME = 'quizerator-v2';
 const urlsToCache = [
   '/',
   '/index.html',
